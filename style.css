@@ -4,8 +4,8 @@
   --bleu-clair: #f0f5fb;
   --accent: #b8860b;
   --accent-clair: #fdf6e3;
-  --vert: #2e7d32;
-  --vert-fonce: #256628;
+  --vert: #2a6b2e;
+  --vert-fonce: #1f5323;
   --texte: #26303b;
   --gris: #5b6a7a;
   --bord: #dfe8f2;
@@ -96,6 +96,11 @@ p + p { margin-top: 12px; }
 .centre { text-align: center; }
 .transition { text-align: center; font-size: 20px; max-width: 640px; margin: 34px auto 0; color: var(--gris); }
 .transition strong { color: var(--bleu); }
+.references {
+  font-family: Helvetica, Arial, sans-serif; font-size: 13.5px; color: var(--gris);
+  margin-top: 18px; text-align: center; max-width: 720px; margin-left: auto; margin-right: auto;
+  line-height: 1.6;
+}
 
 /* ---------- Cartes en grille ---------- */
 .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 32px; }
@@ -188,7 +193,7 @@ section:not(.alt) .encadre { background: var(--bleu-clair); box-shadow: none; }
 .mention-ei { font-size: 15px; color: var(--gris); font-family: Helvetica, Arial, sans-serif; }
 
 /* ---------- Cadeau ---------- */
-.section-cadeau { border-top: 3px solid var(--accent); background: var(--accent-clair); }
+.section-cadeau { border-top: 3px solid var(--accent); background: #fafcfe; }
 .section-cadeau p { max-width: 720px; margin-left: auto; margin-right: auto; }
 
 /* ---------- FAQ ---------- */
