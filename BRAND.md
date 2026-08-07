@@ -21,8 +21,11 @@ fort contraste, repères visuels simples.
 - Corps ≥ 18 px. Jamais de texte gris clair sur fond clair.
 
 ## Logo
-Wordmark texte : `Mon` (blanc ou bleu) + `CRG` (or) + `.fr`. Pas de pictogramme-logo.
-Monogramme « M » or sur carré bleu arrondi = favicon / avatar réseaux (favicon-512.png).
+Monogramme : « M » Georgia or (`#e8c469`) sur pavé arrondi bleu marine (`#1d3a5f`), souligné
+d'une ligne de signature or (`#b8860b`) — évoque le document signé. Logotype : monogramme +
+« MonCRG.fr » (Mon/.fr bleu, CRG or foncé sur fond clair ; blanc/or clair sur fond sombre).
+Fichiers dans `logo/` : `moncrg-logo.png` (fond clair), `moncrg-logo-fond-sombre.png`,
+`moncrg-monogramme.png` (512px, aussi avatar réseaux). Sources HTML de génération côté Alfred.
 
 ## Pictogrammes
 SVG inline, trait 1.7, bouts ronds, monochromes (bleu sur pastille `#f0f5fb`, vert pour les
