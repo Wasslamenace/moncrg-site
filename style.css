@@ -259,3 +259,5 @@ main.legal .todo { background: var(--accent-clair); border: 1px dashed var(--acc
   .vtl-ico svg { width: 24px; height: 24px; }
   .prix-carte { padding: 26px 20px; }
 }
+
+.legal .signature{font-style:italic;color:#1d3a5f;margin-top:-.4em;font-size:.95em}
