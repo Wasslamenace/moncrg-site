@@ -303,17 +303,9 @@
         <li>La saisie guidée et votre historique, sans limite de durée</li>
         <li>Vous entrez en premier, et vous pesez sur ce qui est construit ensuite</li>
       </ul>
-      <!-- Paiement : tant que le Payment Link Stripe à 89 € n'existe pas, les deux CTA sont en
-           mode "mailto" (aucun bouton mort, aucune vente au mauvais prix). Pour basculer sur
-           Stripe : coller l'URL du Payment Link dans les deux attributs data-stripe (celui-ci et
-           celui de la section cadeau), le script de bas de page réécrit alors le href tout seul
-           en y ajoutant le client_reference_id issu des UTM. Puis retirer le paragraphe
-           "Le paiement en ligne ouvre dans quelques jours". -->
-      <a class="cta" data-stripe="" href="mailto:contact@moncrg.fr?subject=Pr%C3%A9commande%20de%20la%20v%C3%A9rification%20(89%20%E2%82%AC)&body=Bonjour%20Wassim%2C%0A%0AJe%20souhaite%20pr%C3%A9commander%20la%20v%C3%A9rification%20de%20mon%20compte%20de%20gestion.%20Pouvez-vous%20m%27envoyer%20le%20lien%20de%20paiement%20%3F%0A%0AMerci.">Je précommande ma vérification — 89&nbsp;€</a>
-      <p class="stripe-note"><strong>Le paiement en ligne ouvre dans quelques jours.</strong> D'ici là,
-      écrivez-moi en un clic avec le bouton ci-dessus&nbsp;: je vous réponds personnellement et je vous
-      envoie votre lien de paiement sécurisé. Vous serez parmi les tout premiers — et j'aurai le
-      plaisir de savoir qui vous êtes.</p>
+      <!-- Paiement : Payment Link Stripe 89 EUR. Le script de bas de page reecrit le href
+           en y ajoutant le client_reference_id issu des UTM (attribution du canal). -->
+      <a class="cta" data-stripe="https://buy.stripe.com/dRmbJ2fof7XG0QvbuQ3ks01" href="#precommande">Je précommande ma vérification — 89&nbsp;€</a>
       <p class="stripe-note">Paiement sur la page sécurisée de Stripe, le service de paiement utilisé
       par des millions d'entreprises. Nous ne voyons jamais votre carte — et votre banque vous protège
       aussi&nbsp;: un service payé et non fourni peut être contesté.</p>
@@ -423,7 +415,7 @@
     transférer, votre parent l'active à l'ouverture. Remboursable s'il n'en veut pas&nbsp;; rien n'est
     collecté le concernant avant l'activation.</p>
     <p class="centre" style="margin-top: 22px;">
-      <a class="cta secondaire" data-stripe="" href="mailto:contact@moncrg.fr?subject=Offrir%20la%20v%C3%A9rification%20MonCRG%20(89%20%E2%82%AC)">Offrir la vérification à un parent — 89&nbsp;€</a>
+      <a class="cta secondaire" data-stripe="https://buy.stripe.com/dRmbJ2fof7XG0QvbuQ3ks01" href="#precommande">Offrir la vérification à un parent — 89&nbsp;€</a>
     </p>
   </div>
 </section>
