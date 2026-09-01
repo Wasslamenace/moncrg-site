@@ -10,7 +10,20 @@ Le contenu vit desormais ici, en clair, et se regenere par :
     python3 outils/build-guide-decouverte.py
 
 Toute modification de prix, de date ou d'offre doit passer par ce fichier.
+
+Deux sorties :
+    python3 outils/build-guide-decouverte.py             -> guide-decouverte.pdf
+    python3 outils/build-guide-decouverte.py --diffusion -> guide-decouverte-diffusion.pdf
+
+La variante --diffusion omet l'encadre commercial final (< Aller plus loin >) :
+c'est la version remise aux services publics (ISTF/UDAF) pour qu'ils puissent la
+diffuser aux familles sans paraitre recommander un produit payant. Tout le reste
+est identique.
 """
+
+import sys
+
+DIFFUSION = "--diffusion" in sys.argv
 
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
@@ -20,7 +33,7 @@ from reportlab.lib import colors
 from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate,
                                 Paragraph, Spacer, ListFlowable, ListItem)
 
-SORTIE = "guide-decouverte.pdf"
+SORTIE = "guide-decouverte-diffusion.pdf" if DIFFUSION else "guide-decouverte.pdf"
 TITRE = "Le compte de gestion 2024\u00a0: ce qui a chang\u00e9, ce qu'on attend de vous"
 
 MARINE = colors.HexColor("#1d3a5f")
@@ -160,6 +173,13 @@ def contenu():
     P("MonCRG ne remplace aucun de ces interlocuteurs et ne cherche pas &agrave; le faire. Notre "
       "travail commence apr&egrave;s&nbsp;: une fois le compte rempli, le relire ligne &agrave; ligne "
       "avant le d&eacute;p&ocirc;t.")
+
+    if DIFFUSION:
+        P("MonCRG.fr - Wassim Tallal, entrepreneur individuel, SIREN 795 055 482 - "
+          "contact@moncrg.fr. Information g&eacute;n&eacute;rale, jamais de conseil juridique "
+          "individualis&eacute; (loi n&deg; 71-1130 du 31 d&eacute;cembre 1971). Document "
+          "librement diffusable.", "legal")
+        return f
 
     P("Aller plus loin", "h2")
     P("Votre compte de l'ann&eacute;e 2026 se pr&eacute;pare <b>maintenant</b> - et se d&eacute;pose "
