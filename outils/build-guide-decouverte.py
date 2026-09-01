@@ -201,61 +201,117 @@ class SchemaQuiVerifie(Flowable):
 
 
 class SchemaModele(Flowable):
-    """Les trois blocs du modele officiel : pastilles I-III, A-E, signature."""
+    """Le modele officiel montre comme ce qu'il est : un document. Une miniature
+    du formulaire (zones I-III, tableaux A-E, signature) annotee sur la droite —
+    le lecteur voit l'objet qu'il devra produire, pas une liste decoree."""
 
-    H = 58 * mm
+    H = 66 * mm
+    LF, HF = 40 * mm, 58 * mm      # la feuille miniature (ratio proche A4)
 
     def wrap(self, aw, ah):
         self.l = aw
         return aw, self.H
 
-    def _rangee(self, c, y, h, jetons, titre, detail):
-        carte(c, 0, y, self.l, h, fond=BLEU_CLair, bord=BORD, epaisseur=0.9)
-        x = 5 * mm
-        cote = 7.6 * mm
-        for j in jetons:
-            c.setFillColor(MARINE)
-            c.roundRect(x, y + (h - cote) / 2, cote, cote, 1.6 * mm, stroke=0, fill=1)
-            c.setFont(SERIF_B, 10.5)
-            c.setFillColor(BLANC)
-            c.drawCentredString(x + cote / 2, y + h / 2 - 1.6 * mm, j)
-            x += cote + 2.2 * mm
-        xt = x + 3.5 * mm
+    def _grille(self, c, x, y, l, h, lignes, colonnes):
+        c.setFillColor(BLEU_CLair)
+        c.rect(x, y + h - h / lignes, l, h / lignes, stroke=0, fill=1)  # ligne d'en-tete
+        c.setStrokeColor(BORD)
+        c.setLineWidth(0.5)
+        c.rect(x, y, l, h, stroke=1, fill=0)
+        for i in range(1, lignes):
+            c.line(x, y + h * i / lignes, x + l, y + h * i / lignes)
+        for j in range(1, colonnes):
+            c.line(x + l * j / colonnes, y, x + l * j / colonnes, y + h)
+
+    def _lettre(self, c, x, y, t, cote=3.4 * mm):
+        c.setFillColor(MARINE)
+        c.roundRect(x, y, cote, cote, 0.8 * mm, stroke=0, fill=1)
+        c.setFont(SERIF_B, 6.5)
+        c.setFillColor(BLANC)
+        c.drawCentredString(x + cote / 2, y + cote / 2 - 0.8 * mm, t)
+
+    def _annotation(self, c, y_zone, titre, detail):
+        x_texte = self.LF + 13 * mm
+        c.setStrokeColor(OR)
+        c.setLineWidth(0.9)
+        c.line(self.LF + 2 * mm, y_zone, x_texte - 3 * mm, y_zone)
+        c.setFillColor(OR)
+        c.circle(self.LF + 2 * mm, y_zone, 1 * mm, stroke=0, fill=1)
         c.setFont(SERIF_B, 10.5)
         c.setFillColor(MARINE)
-        c.drawString(xt, y + h / 2 + 0.9 * mm, titre)
+        c.drawString(x_texte, y_zone + 1.2 * mm, titre)
         c.setFont(SERIF, 9)
         c.setFillColor(GRIS)
-        for i, ligne in enumerate(decoupe(detail, SERIF, 9, self.l - xt - 4 * mm)[:2]):
-            c.drawString(xt, y + h / 2 - (3.4 + 3.6 * i) * mm, ligne)
+        yl = y_zone - 3.4 * mm
+        for ligne in decoupe(detail, SERIF, 9, self.l - x_texte)[:3]:
+            c.drawString(x_texte, yl, ligne)
+            yl -= 3.8 * mm
 
     def draw(self):
         c = self.canv
-        h, ec = 16 * mm, 3.5 * mm
-        y = self.H - h
-        self._rangee(c, y, h, ["I", "II", "III"], "L’identification",
-                     "la personne protégée · la mesure et vos coordonnées "
-                     "· les actes de gestion de l’année")
-        y -= h + ec
-        self._rangee(c, y, h, ["A", "B", "C", "D", "E"], "Les cinq tableaux chiffrés",
-                     "ressources · dépenses · balance · tous les comptes "
-                     "et livrets · dettes")
-        y -= h + ec
-        carte(c, 0, y, self.l, h, fond=BLEU_CLair, bord=BORD, epaisseur=0.9)
-        # trait de signature, l'or du logo
-        c.setStrokeColor(OR)
-        c.setLineWidth(1.4)
-        c.line(5 * mm, y + 4.6 * mm, 27 * mm, y + 4.6 * mm)
-        c.setFont(SERIF_I, 12)
-        c.setFillColor(OR)
-        c.drawString(7 * mm, y + 6.2 * mm, "Wassim T.")
-        c.setFont(SERIF_B, 10.5)
-        c.setFillColor(MARINE)
-        c.drawString(33 * mm, y + h / 2 + 0.9 * mm, "Les observations et la signature")
-        c.setFont(SERIF, 9)
+        y0 = self.H - self.HF - 2 * mm
+        # Ombre puis feuille
+        c.setFillColor(colors.HexColor("#d8dee8"))
+        c.roundRect(1 * mm, y0 - 1 * mm, self.LF, self.HF, 1.2 * mm, stroke=0, fill=1)
+        c.setFillColor(BLANC)
+        c.setStrokeColor(GRIS)
+        c.setLineWidth(0.8)
+        c.roundRect(0, y0, self.LF, self.HF, 1.2 * mm, stroke=1, fill=1)
+        # En-tete du formulaire
+        c.setFont(SANS_B, 4.2)
         c.setFillColor(GRIS)
-        c.drawString(33 * mm, y + h / 2 - 3.4 * mm,
-                     "votre signature certifie la sincérité du compte")
+        c.drawCentredString(self.LF / 2, y0 + self.HF - 4 * mm, "COMPTE DE GESTION — MODÈLE OFFICIEL")
+        c.setStrokeColor(BORD)
+        c.setLineWidth(0.5)
+        c.line(3 * mm, y0 + self.HF - 5.5 * mm, self.LF - 3 * mm, y0 + self.HF - 5.5 * mm)
+
+        # Zone 1 : identification (trois bandes de champs I, II, III)
+        y = y0 + self.HF - 10.5 * mm
+        for chiffre in ("I", "II", "III"):
+            self._lettre(c, 3 * mm, y, chiffre)
+            c.setStrokeColor(BORD)
+            c.setLineWidth(0.6)
+            for k in range(2):
+                c.line(8.5 * mm, y + 0.7 * mm + k * 1.7 * mm,
+                       self.LF - 3.5 * mm, y + 0.7 * mm + k * 1.7 * mm)
+            y -= 5.2 * mm
+        y_zone1 = y0 + self.HF - 12.5 * mm
+
+        # Zone 2 : les cinq tableaux (A B / C D / E) — E s'arrete au-dessus
+        # de la zone de signature, rien ne se chevauche
+        yt = y - 3 * mm
+        lt = (self.LF - 8.5 * mm) / 2
+        ht, pas = 7 * mm, 8.6 * mm
+        positions = [("A", 3 * mm, yt, lt, 3, 3), ("B", 5.5 * mm + lt, yt, lt, 3, 3),
+                     ("C", 3 * mm, yt - pas, lt, 2, 2), ("D", 5.5 * mm + lt, yt - pas, lt, 3, 4),
+                     ("E", 3 * mm, yt - 2 * pas, lt, 2, 3)]
+        for lettre, x, yy, l_, lg, coln in positions:
+            self._grille(c, x, yy - ht, l_, ht, lg, coln)
+            self._lettre(c, x + 0.6 * mm, yy - 3.8 * mm, lettre)
+        y_zone2 = yt - pas - ht / 2
+
+        # Zone 3 : observations + signature, sous le tableau E
+        c.setStrokeColor(BORD)
+        c.setLineWidth(0.6)
+        c.line(3 * mm, y0 + 7 * mm, self.LF - 3.5 * mm, y0 + 7 * mm)
+        c.line(3 * mm, y0 + 5.2 * mm, self.LF - 16 * mm, y0 + 5.2 * mm)
+        c.setStrokeColor(OR)
+        c.setLineWidth(1)
+        c.line(self.LF - 16 * mm, y0 + 2.4 * mm, self.LF - 4 * mm, y0 + 2.4 * mm)
+        c.setFont(SERIF_I, 6.5)
+        c.setFillColor(OR)
+        c.drawString(self.LF - 14.5 * mm, y0 + 3.2 * mm, "Wassim T.")
+        y_zone3 = y0 + 4.6 * mm
+
+        # Annotations
+        self._annotation(c, y_zone1, "L’identification (parties I à III)",
+                         "la personne protégée · la mesure et vos coordonnées "
+                         "· les actes de gestion de l’année")
+        self._annotation(c, y_zone2, "Les cinq tableaux chiffrés (A à E)",
+                         "A ressources · B dépenses · C balance · D tous les "
+                         "comptes, livrets et contrats · E dettes")
+        self._annotation(c, y_zone3, "Les observations et la signature",
+                         "votre signature certifie la sincérité du compte")
 
 
 class Frise(Flowable):
