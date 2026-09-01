@@ -34,7 +34,7 @@ from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate,
                                 Paragraph, Spacer, ListFlowable, ListItem)
 
 SORTIE = "guide-decouverte-diffusion.pdf" if DIFFUSION else "guide-decouverte.pdf"
-TITRE = "Le compte de gestion 2024\u00a0: ce qui a chang\u00e9, ce qu'on attend de vous"
+TITRE = "Le compte de gestion 2024\u00a0: ce qui a chang\u00e9, ce qu\u2019on attend de vous"
 
 MARINE = colors.HexColor("#1d3a5f")
 DOUX = colors.HexColor("#5d6b7d")
@@ -62,7 +62,7 @@ S = {
 }
 
 def liste(items, st="puce"):
-    return ListFlowable([ListItem(Paragraph(t, S[st]), leftIndent=14) for t in items],
+    return ListFlowable([ListItem(Paragraph(typo(t), S[st]), leftIndent=14) for t in items],
                         bulletType="bullet", start="\u2022", bulletFontSize=8,
                         bulletOffsetY=-1, leftIndent=14, bulletColor=MARINE, spaceAfter=6)
 
@@ -71,16 +71,25 @@ def habillage(canvas, doc):
     canvas.setFont("Helvetica", 7)
     canvas.setFillColor(DOUX)
     canvas.drawString(18 * mm, A4[1] - 12 * mm,
-                      "MonCRG.fr - %s - offert par moncrg.fr" % TITRE)
+                      "MonCRG.fr \u2014 %s \u2014 offert par moncrg.fr" % TITRE)
     canvas.setStrokeColor(colors.HexColor("#dfe3ea"))
     canvas.setLineWidth(0.5)
     canvas.line(18 * mm, A4[1] - 14 * mm, A4[0] - 18 * mm, A4[1] - 14 * mm)
     canvas.drawRightString(A4[0] - 18 * mm, 12 * mm, "Page %d" % doc.page)
     canvas.restoreState()
 
+def typo(t):
+    """Finition typographique francaise, apres coup pour garder les sources lisibles."""
+    t = t.replace(" - ", " \u2014 ")          # tiret cadratin
+    t = t.replace("'", "\u2019")              # apostrophe typographique
+    t = t.replace("oeil", "\u0153il")         # oe soude
+    t = t.replace(" :", "\u00a0:")            # espace insecable avant deux-points
+    t = t.replace("\u00a0\u00a0:", "\u00a0:")  # pas de double insecable si deja &nbsp;
+    return t
+
 def contenu():
     f = []
-    P = lambda t, st="p": f.append(Paragraph(t, S[st]))
+    P = lambda t, st="p": f.append(Paragraph(typo(t), S[st]))
 
     P("Le compte de gestion depuis la r&eacute;forme de 2024&nbsp;:<br/>"
       "ce qui a chang&eacute;, ce qu'on attend de vous", "h1")
@@ -91,13 +100,15 @@ def contenu():
 
     P("1. Ce qui a chang&eacute; en 2024", "h2")
     P("Chaque ann&eacute;e, en tant que tuteur ou curateur, vous rendez compte de votre gestion. "
-      "Deux textes de 2024 ont chang&eacute; la donne&nbsp;: le <b>d&eacute;cret n&deg; 2024-659 du "
-      "2 juillet 2024</b> et l'<b>arr&ecirc;t&eacute; du 4 juillet 2024</b> (JORF du 12 juillet 2024).")
+      "La donne a chang&eacute; avec le <b>d&eacute;cret n&deg; 2024-659 du 2 juillet 2024</b>, "
+      "compl&eacute;t&eacute; par <b>deux arr&ecirc;t&eacute;s du 4 juillet 2024</b> (JORF du "
+      "12 juillet 2024)&nbsp;: l'un fixe les mod&egrave;les officiels, l'autre la "
+      "r&eacute;mun&eacute;ration du professionnel charg&eacute; du contr&ocirc;le.")
     P("<b>Premier changement - qui contr&ocirc;le.</b> Ce n'est plus le greffe du tribunal qui "
       "v&eacute;rifie vos comptes. Selon votre situation, c'est un &laquo;&nbsp;contr&ocirc;leur "
       "interne&nbsp;&raquo; (subrog&eacute; tuteur, co-tuteur, conseil de famille) ou un "
       "<b>professionnel qualifi&eacute;</b> d&eacute;sign&eacute; par le juge (notaire, commissaire "
-      "de justice, commissaire aux comptes, mandataire judiciaire...). Ce v&eacute;rificateur a de "
+      "de justice, commissaire aux comptes, mandataire judiciaire &agrave; la protection des majeurs). Ce v&eacute;rificateur a de "
       "vrais moyens&nbsp;: il peut exiger toute pi&egrave;ce utile et interroger directement les "
       "banques - le secret bancaire ne lui est pas opposable (articles 510 et 513-1 du code civil).")
     P("<b>Second changement - le format.</b> Le compte de gestion n'est plus un tableau libre&nbsp;: "
@@ -109,7 +120,7 @@ def contenu():
       "savez ce que chaque rubrique attend, vous savez exactement quoi pr&eacute;parer.")
 
     P("2. Le mod&egrave;le officiel en un coup d'oeil", "h2")
-    P("Le mod&egrave;le annex&eacute; &agrave; l'arr&ecirc;t&eacute; du 4 juillet 2024 "
+    P("Le mod&egrave;le annex&eacute; &agrave; l'arr&ecirc;t&eacute; &laquo;&nbsp;mod&egrave;les&nbsp;&raquo; du 4 juillet 2024 "
       "(L&eacute;gifrance, r&eacute;f. JORFTEXT000049893287) s'organise en trois blocs&nbsp;:")
     f.append(liste([
         "<b>Trois parties d'identification</b>&nbsp;: la personne prot&eacute;g&eacute;e (I), la "
@@ -121,8 +132,8 @@ def contenu():
         "<b>Les observations et la signature</b>, qui certifie la sinc&eacute;rit&eacute; du compte.",
     ]))
     P("Chaque rubrique a ses attentes pr&eacute;cises, ses pi&egrave;ces justificatives - et ses "
-      "pi&egrave;ges. Les remplir &laquo;&nbsp;de m&eacute;moire&nbsp;&raquo; est la premi&egrave;re "
-      "cause d'&eacute;carts inexpliqu&eacute;s&nbsp;; la bonne m&eacute;thode part toujours des "
+      "pi&egrave;ges. Remplis &laquo;&nbsp;de m&eacute;moire&nbsp;&raquo;, les tableaux produisent "
+      "des &eacute;carts inexpliqu&eacute;s&nbsp;; la bonne m&eacute;thode part toujours des "
       "relev&eacute;s bancaires.")
 
     P("3. Les trois erreurs qui co&ucirc;tent le plus cher", "h2")
@@ -132,9 +143,10 @@ def contenu():
         "interroger les banques directement&nbsp;: un compte pr&eacute;sent chez la banque mais "
         "absent de votre tableau transforme un oubli en question d&eacute;sagr&eacute;able.",
         "<b>La grosse d&eacute;pense sans justificatif.</b> La liste minist&eacute;rielle des "
-        "pi&egrave;ces demande un justificatif pour toute d&eacute;pense sup&eacute;rieure &agrave; "
-        "500&nbsp;&euro;. &Agrave; l'inverse, inutile de garder les tickets des courses courantes - "
-        "la circulaire du 24 septembre 2024 le dit express&eacute;ment.",
+        "pi&egrave;ces (annexe n&deg;&nbsp;2 de la circulaire du minist&egrave;re de la Justice du "
+        "24 septembre 2024) demande un justificatif pour toute d&eacute;pense sup&eacute;rieure "
+        "&agrave; 500&nbsp;&euro;. &Agrave; l'inverse, pour les d&eacute;penses de la vie courante "
+        "sous ce seuil, aucun ticket de caisse n'est exig&eacute;.",
         "<b>L'&eacute;cart inexpliqu&eacute;.</b> Un total de ressources ou de d&eacute;penses qui ne "
         "colle pas aux relev&eacute;s bancaires attire l'attention bien plus que les montants "
         "eux-m&ecirc;mes. Une ligne inhabituelle mais expliqu&eacute;e en deux phrases factuelles ne "
@@ -158,7 +170,7 @@ def contenu():
       "assemblage de pi&egrave;ces d&eacute;j&agrave; class&eacute;es.")
 
     P("5. L'aide gratuite existe - utilisez-la", "h2")
-    P("Vous n'&ecirc;tes pas seul, et il n'y a aucune raison de payer pour ce qui est gratuit.")
+    P("Vous n'avez pas &agrave; faire cela sans aide — et aucune raison de payer pour ce qui est gratuit.")
     f.append(liste([
         "<b>L'ISTF</b> (Information et Soutien aux Tuteurs Familiaux), le plus souvent port&eacute; "
         "par l'UDAF de votre d&eacute;partement. Ces dispositifs existent dans la quasi-totalit&eacute; "
